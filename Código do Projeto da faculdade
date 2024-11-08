@@ -1,0 +1,77 @@
+
+CREATE DATABASE IF NOT EXISTS Faculdade;
+USE Faculdade;
+
+
+CREATE TABLE endereco (
+    id_endereco INT AUTO_INCREMENT PRIMARY KEY,
+    rua VARCHAR(100) NOT NULL,
+    numero VARCHAR(15) NOT NULL,
+    bairro VARCHAR(100),
+    cidade VARCHAR(100),
+    estado VARCHAR(100),
+    cep VARCHAR(10) NOT NULL
+);
+
+
+CREATE TABLE aluno (
+    id_aluno INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(100) NOT NULL,
+    cpf VARCHAR(14) NOT NULL UNIQUE,  
+    data_nascimento DATE,
+    sexo CHAR(1) CHECK (sexo IN ('M', 'F')),  
+    telefone VARCHAR(20),
+    id_endereco INT,  
+    FOREIGN KEY (id_endereco) REFERENCES endereco(id_endereco)
+);
+
+
+CREATE TABLE curso (
+    id_curso INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(200) NOT NULL,
+    semestre VARCHAR(6)  
+);
+
+
+CREATE TABLE disciplina (
+    id_disciplina INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(200) NOT NULL,
+    id_professor INT,
+    id_curso INT,  
+    FOREIGN KEY (id_curso) REFERENCES curso(id_curso)
+);
+
+
+CREATE TABLE professor (
+    id_professor INT AUTO_INCREMENT PRIMARY KEY,
+    nome VARCHAR(200) NOT NULL,
+    graduacao VARCHAR(200),
+    telefone VARCHAR(20),
+    email VARCHAR(100)
+);
+
+
+CREATE TABLE matricula (
+    id_matricula INT AUTO_INCREMENT PRIMARY KEY,
+    id_aluno INT, 
+    id_curso INT,  
+    data_matricula DATE NOT NULL,
+    status_matricula VARCHAR(20) CHECK (status_matricula IN ('ativa', 'trancada', 'concluída')),  
+    FOREIGN KEY (id_aluno) REFERENCES aluno(id_aluno),
+    FOREIGN KEY (id_curso) REFERENCES curso(id_curso)
+);
+
+INSERT INTO endereco (rua, numero, bairro, cidade, estado, cep) 
+	VALUES ('Rua A', '123', 'Centro', 'São Paulo', 'SP', '01001-000');
+
+INSERT INTO aluno (nome, cpf, data_nascimento, sexo, telefone, email, id_endereco) 
+	VALUES ('Jonatan Mendes', '123.456.789-00', '2000-05-15', 'M', '11987654321', 'jonatan_mendes@email.com', 1);
+
+INSERT INTO curso (nome, descricao, carga_horaria, semestre) 
+	VALUES ('Gestão em tecnologia da informação', 'Curso de tecnologia da informação', 3600, '2024.1');
+
+INSERT INTO professor (nome, graduacao, telefone, email) 
+	VALUES ('Ronaldo Oliveira', 'Gestor de Tecnologia da informação', '11987654321', 'ronaldo_oliver@professor.com');
+
+INSERT INTO matricula (id_aluno, id_curso, data_matricula, status_matricula) 
+	VALUES (1, 1, '2024-01-01', 'ativa');
